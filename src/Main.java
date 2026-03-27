@@ -1,10 +1,11 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Main {
 
-    // Reusing Bogie model from UC7
+    // Reusing Bogie model from UC7 / UC8
     static class Bogie {
         String name;
         int capacity;
@@ -22,34 +23,38 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("======================================");
-        System.out.println(" UC8 - Filter Passenger Bogies Using Streams ");
-        System.out.println("======================================");
-        System.out.println();
+        System.out.println(" UC9 - Group Bogies by Type ");
+        System.out.println("======================================\n");
 
-        // Create list of passenger bogies
+        // Create list of bogies
         List<Bogie> bogies = new ArrayList<>();
+
         bogies.add(new Bogie("Sleeper", 72));
         bogies.add(new Bogie("AC Chair", 56));
         bogies.add(new Bogie("First Class", 24));
-        bogies.add(new Bogie("General", 90));
+        bogies.add(new Bogie("Sleeper", 70));
+        bogies.add(new Bogie("AC Chair", 60));
 
+        // Display input bogies
         System.out.println("All Bogies:");
-        for (Bogie bogie : bogies) {
-            System.out.println(bogie);
+        for (Bogie b : bogies) {
+            System.out.println(b);
         }
-        System.out.println();
 
-        // Convert list into stream, apply filter, and collect results
-        List<Bogie> filteredBogies = bogies.stream()
-                .filter(b -> b.capacity > 60)
-                .collect(Collectors.toList());
+        // ---- GROUP USING COLLECTORS.GROUPINGBY ----
+        Map<String, List<Bogie>> groupedBogies = bogies.stream()
+                .collect(Collectors.groupingBy(b -> b.name));
 
-        System.out.println("Filtered Bogies (Capacity > 60):");
-        for (Bogie bogie : filteredBogies) {
-            System.out.println(bogie);
+        // Display grouped structure
+        System.out.println("\nGrouped Bogies:\n");
+        for (Map.Entry<String, List<Bogie>> entry : groupedBogies.entrySet()) {
+            System.out.println("Bogie Type: " + entry.getKey());
+            for (Bogie b : entry.getValue()) {
+                System.out.println("  Capacity -> " + b.capacity);
+            }
+            System.out.println();
         }
-        System.out.println();
 
-        System.out.println("UC8 filtering completed...");
+        System.out.println("UC9 grouping completed...");
     }
 }
