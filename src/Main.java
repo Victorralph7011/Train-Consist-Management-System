@@ -1,29 +1,33 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
 
-    // --- Restored Bogie class so earlier tests compile ---
+    // --- Restored Passenger Bogie (Compatible with UC8, UC9, UC10, and UC13 tests) ---
     public static class Bogie {
-        String name;
-        int capacity;
-        public Bogie(String name, int capacity) {
-            this.name = name;
+        public String name;
+        public String type; // Alias to keep UC13 tests happy
+        public int capacity;
+
+        public Bogie(String nameOrType, int capacity) {
+            this.name = nameOrType;
+            this.type = nameOrType;
             this.capacity = capacity;
         }
+
         @Override
         public String toString() {
             return name + " -> " + capacity;
         }
     }
-    // -----------------------------------------------------
 
-    // Goods Bogie model
-    static class GoodsBogie {
-        String type;
-        String cargo;
+    // --- Restored Goods Bogie (Compatible with UC12 tests) ---
+    public static class GoodsBogie {
+        public String type;
+        public String cargo;
 
-        GoodsBogie(String type, String cargo) {
+        public GoodsBogie(String type, String cargo) {
             this.type = type;
             this.cargo = cargo;
         }
@@ -33,37 +37,43 @@ public class Main {
             return type + " -> " + cargo;
         }
     }
+    // -------------------------------------------------------------------
 
     public static void main(String[] args) {
         System.out.println("==================================================");
-        System.out.println(" UC12 - Safety Compliance Check for Goods Bogies");
+        System.out.println(" UC13 - Performance Comparison (Loops vs Streams) ");
         System.out.println("==================================================\n");
 
-        // Create goods bogie list
-        List<GoodsBogie> goodsBogies = new ArrayList<>();
-        goodsBogies.add(new GoodsBogie("Cylindrical", "Petroleum"));
-        goodsBogies.add(new GoodsBogie("Open", "Coal"));
-        goodsBogies.add(new GoodsBogie("Box", "Grain"));
-        goodsBogies.add(new GoodsBogie("Cylindrical", "Coal")); // This will cause a safety violation
-
-        System.out.println("Goods Bogies in Train:");
-        for (GoodsBogie bogie : goodsBogies) {
-            System.out.println(bogie);
+        // Create large test dataset
+        List<Bogie> bogies = new ArrayList<>();
+        for (int i = 0; i < 100000; i++) {
+            bogies.add(new Bogie("Sleeper", 72));
+            bogies.add(new Bogie("AC Chair", 56));
+            bogies.add(new Bogie("First Class", 24));
         }
-        System.out.println();
 
-        // Check compliance using allMatch()
-        // Rule: If the type is Cylindrical, the cargo MUST be Petroleum.
-        boolean isSafe = goodsBogies.stream()
-                .allMatch(bogie -> bogie.type.equals("Cylindrical") ? bogie.cargo.equals("Petroleum") : true);
-
-        // Display safety status
-        System.out.println("Safety Compliance Status: " + isSafe);
-        if (isSafe) {
-            System.out.println("Train formation is SAFE.");
-        } else {
-            System.out.println("Train formation is NOT SAFE.");
+        // --- MEASURE LOOP PERFORMANCE ---
+        long loopStartTime = System.nanoTime();
+        List<Bogie> loopResult = new ArrayList<>();
+        for (Bogie b : bogies) {
+            if (b.capacity > 60) {
+                loopResult.add(b);
+            }
         }
-        System.out.println("\nUC12 safety validation completed...");
+        long loopEndTime = System.nanoTime();
+        long loopDuration = loopEndTime - loopStartTime;
+
+        // --- MEASURE STREAM PERFORMANCE ---
+        long streamStartTime = System.nanoTime();
+        List<Bogie> streamResult = bogies.stream()
+                .filter(b -> b.capacity > 60)
+                .collect(Collectors.toList());
+        long streamEndTime = System.nanoTime();
+        long streamDuration = streamEndTime - streamStartTime;
+
+        // Display performance results
+        System.out.println("Loop Execution Time (ns): " + loopDuration);
+        System.out.println("Stream Execution Time (ns): " + streamDuration);
+        System.out.println("\nUC13 performance benchmarking completed...");
     }
 }
