@@ -1,29 +1,55 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class Main {
+
+    // Inner Bogie class to model passenger bogies
+    static class Bogie {
+        String name;
+        int capacity;
+
+        public Bogie(String name, int capacity) {
+            this.name = name;
+            this.capacity = capacity;
+        }
+
+        @Override
+        public String toString() {
+            return name + " -> " + capacity;
+        }
+    }
+
     public static void main(String[] args) {
         System.out.println("======================================");
-        System.out.println(" UC6 - Map Bogie to Capacity (HashMap)");
+        System.out.println(" UC7 - Sort Bogies by Capacity (Comparator)");
         System.out.println("======================================");
         System.out.println();
 
-        // HashMap stores data in key -> value format
-        Map<String, Integer> capacityMap = new HashMap<>();
+        // Create list of passenger bogies
+        List<Bogie> bogies = new ArrayList<>();
 
-        // Insert bogie capacities
-        capacityMap.put("First Class", 24);
-        capacityMap.put("Cargo", 120);
-        capacityMap.put("Sleeper", 72);
-        capacityMap.put("AC Chair", 56);
+        // Add bogies
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("AC Chair", 56));
+        bogies.add(new Bogie("First Class", 24));
+        bogies.add(new Bogie("General", 90));
 
-        System.out.println("Bogie Capacity Details:");
-        // Iterate over the map using entrySet()
-        for (Map.Entry<String, Integer> entry : capacityMap.entrySet()) {
-            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        System.out.println("Before Sorting:");
+        for (Bogie bogie : bogies) {
+            System.out.println(bogie);
         }
         System.out.println();
 
-        System.out.println("UC6 bogie-capacity mapping completed...");
+        // Sort using Comparator logic (Lambda expression)
+        bogies.sort(Comparator.comparingInt(b -> b.capacity));
+
+        System.out.println("After Sorting by Capacity:");
+        for (Bogie bogie : bogies) {
+            System.out.println(bogie);
+        }
+        System.out.println();
+
+        System.out.println("UC7 sorting completed...");
     }
 }
