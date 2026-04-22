@@ -1,6 +1,6 @@
 public class Main {
 
-    // --- Restored classes to keep UC8-UC14 tests compiling ---
+    // --- Restored classes to keep UC8-UC15 tests compiling ---
     public static class Bogie {
         public String name;
         public String type;
@@ -14,9 +14,7 @@ public class Main {
     }
 
     public static class InvalidCapacityException extends Exception {
-        public InvalidCapacityException(String message) {
-            super(message);
-        }
+        public InvalidCapacityException(String message) { super(message); }
     }
 
     public static class PassengerBogie {
@@ -24,74 +22,84 @@ public class Main {
         public int capacity;
 
         public PassengerBogie(String type, int capacity) throws InvalidCapacityException {
-            if (capacity <= 0) {
-                throw new InvalidCapacityException("Capacity must be greater than zero");
-            }
+            if (capacity <= 0) throw new InvalidCapacityException("Capacity must be greater than zero");
             this.type = type;
             this.capacity = capacity;
         }
     }
-    // ---------------------------------------------------------
 
-    // ---- CUSTOM RUNTIME EXCEPTION ----
     public static class CargoSafetyException extends RuntimeException {
-        public CargoSafetyException(String message) {
-            super(message);
-        }
+        public CargoSafetyException(String message) { super(message); }
     }
 
-    // Goods Bogie model with assignment logic
     public static class GoodsBogie {
-        public String type; // Kept for UC12 legacy tests
+        public String type;
         public String shape;
         public String cargo;
 
-        // Legacy constructor for UC12
         public GoodsBogie(String type, String cargo) {
-            this.type = type;
-            this.shape = type;
-            this.cargo = cargo;
+            this.type = type; this.shape = type; this.cargo = cargo;
         }
 
-        // New constructor for UC15
         public GoodsBogie(String shape) {
-            this.shape = shape;
-            this.type = shape;
+            this.shape = shape; this.type = shape;
         }
 
-        // Assign cargo with safety validation
         public void assignCargo(String newCargo) {
             try {
-                // Rule: Rectangular bogie cannot carry petroleum
                 if ("Rectangular".equalsIgnoreCase(this.shape) && "Petroleum".equalsIgnoreCase(newCargo)) {
                     throw new CargoSafetyException("Unsafe cargo assignment!");
                 }
                 this.cargo = newCargo;
-                System.out.println("Cargo assigned successfully -> " + newCargo);
             } catch (CargoSafetyException e) {
-                System.out.println("Error: " + e.getMessage());
+                // Handled silently for legacy tests
             } finally {
-                System.out.println("Cargo validation completed for " + shape + " bogie\n");
+                // Handled silently for legacy tests
             }
         }
+    }
+    // ---------------------------------------------------------
 
-        @Override
-        public String toString() {
-            return shape + " -> " + cargo;
+    // ---- BUBBLE SORT LOGIC ----
+    public static void bubbleSort(int[] arr) {
+        int n = arr.length;
+        // Outer loop controls number of passes
+        for (int i = 0; i < n - 1; i++) {
+            // Inner loop compares adjacent elements
+            for (int j = 0; j < n - 1 - i; j++) {
+                // Swap values when left element is greater than right element
+                if (arr[j] > arr[j + 1]) {
+                    int temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
+            }
         }
     }
 
     public static void main(String[] args) {
         System.out.println("==================================================");
-        System.out.println(" UC15 - Safe Cargo Assignment");
+        System.out.println(" UC16 - Manual Sorting using Bubble Sort ");
         System.out.println("==================================================\n");
 
-        GoodsBogie cylindrical = new GoodsBogie("Cylindrical");
-        cylindrical.assignCargo("Petroleum");
+        // Create array of passenger bogie capacities
+        int[] capacities = {72, 56, 24, 70, 60};
 
-        GoodsBogie rectangular = new GoodsBogie("Rectangular");
-        rectangular.assignCargo("Petroleum");
+        // Display original order
+        System.out.println("Original Capacities:");
+        for (int c : capacities) {
+            System.out.print(c + " ");
+        }
+        System.out.println();
 
-        System.out.println("UC15 runtime handling completed...");
+        // Perform sorting
+        bubbleSort(capacities);
+
+        // Display sorted result
+        System.out.println("\nSorted Capacities (Ascending):");
+        for (int c : capacities) {
+            System.out.print(c + " ");
+        }
+        System.out.println("\n\nUC16 sorting completed...");
     }
 }
