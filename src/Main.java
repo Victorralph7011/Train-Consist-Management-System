@@ -2,7 +2,7 @@ import java.util.Arrays;
 
 public class Main {
 
-    // --- Restored classes to keep UC8-UC18 tests compiling ---
+    // --- Restored classes to keep UC8-UC19 tests compiling ---
     public static class Bogie {
         public String name;
         public String type;
@@ -75,6 +75,10 @@ public class Main {
     }
 
     public static boolean linearSearch(String[] arr, String target) {
+        // UC20: Defensive Programming / Fail-Fast Validation
+        if (arr == null || arr.length == 0) {
+            throw new IllegalStateException("Cannot perform search: Train consist is empty.");
+        }
         for (String id : arr) {
             if (id.equals(target)) {
                 return true;
@@ -84,53 +88,54 @@ public class Main {
     }
     // ---------------------------------------------------------
 
-    // ---- BINARY SEARCH LOGIC ----
+    // ---- OPTIMIZED BINARY SEARCH WITH UC20 VALIDATION ----
     public static boolean binarySearch(String[] arr, String target) {
+        // UC20: Defensive Programming / Fail-Fast Validation
+        if (arr == null || arr.length == 0) {
+            throw new IllegalStateException("Cannot perform search: Train consist is empty.");
+        }
+
         int low = 0;
         int high = arr.length - 1;
 
         while (low <= high) {
-            // Find the middle index
             int mid = low + (high - low) / 2;
-
-            // Compare the target with the middle element lexicographically
             int comparison = target.compareTo(arr[mid]);
 
             if (comparison == 0) {
-                return true; // Match found
+                return true;
             }
-
             if (comparison > 0) {
-                low = mid + 1; // Target is greater, discard left half
+                low = mid + 1;
             } else {
-                high = mid - 1; // Target is smaller, discard right half
+                high = mid - 1;
             }
         }
-        return false; // Exhausted search space, not found
+        return false;
     }
 
     public static void main(String[] args) {
         System.out.println("==================================================");
-        System.out.println(" UC19 - Binary Search for Bogie ID");
+        System.out.println(" UC20 - Exception Handling During Search Operations");
         System.out.println("==================================================\n");
 
-        // Array MUST be sorted for Binary Search to work
-        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+        // Simulate an empty train consist
+        String[] emptyConsist = {};
         String searchId = "BG412";
 
-        System.out.println("Sorted Available Bogie IDs:");
-        System.out.println(Arrays.toString(bogieIds) + "\n");
+        System.out.println("Attempting to search for " + searchId + " on an empty train...\n");
 
-        // Perform binary search
-        boolean found = binarySearch(bogieIds, searchId);
+        try {
+            // This will trigger the fail-fast exception
+            binarySearch(emptyConsist, searchId);
 
-        // Display result
-        if (found) {
-            System.out.println("Bogie " + searchId + " found in train consist.");
-        } else {
-            System.out.println("Bogie " + searchId + " not found in train consist.");
+            // This line will never be reached
+            System.out.println("Search completed successfully.");
+        } catch (IllegalStateException e) {
+            System.out.println("Search Aborted!");
+            System.out.println("Error: " + e.getMessage());
         }
 
-        System.out.println("\nUC19 search completed...");
+        System.out.println("\nUC20 exception handling completed...");
     }
 }
