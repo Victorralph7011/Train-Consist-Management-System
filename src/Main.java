@@ -1,6 +1,8 @@
+import java.util.Arrays;
+
 public class Main {
 
-    // --- Restored classes to keep UC8-UC15 tests compiling ---
+    // --- Restored classes to keep UC8-UC16 tests compiling ---
     public static class Bogie {
         public String name;
         public String type;
@@ -58,16 +60,11 @@ public class Main {
             }
         }
     }
-    // ---------------------------------------------------------
 
-    // ---- BUBBLE SORT LOGIC ----
     public static void bubbleSort(int[] arr) {
         int n = arr.length;
-        // Outer loop controls number of passes
         for (int i = 0; i < n - 1; i++) {
-            // Inner loop compares adjacent elements
             for (int j = 0; j < n - 1 - i; j++) {
-                // Swap values when left element is greater than right element
                 if (arr[j] > arr[j + 1]) {
                     int temp = arr[j];
                     arr[j] = arr[j + 1];
@@ -76,30 +73,27 @@ public class Main {
             }
         }
     }
+    // ---------------------------------------------------------
 
     public static void main(String[] args) {
         System.out.println("==================================================");
-        System.out.println(" UC16 - Manual Sorting using Bubble Sort ");
+        System.out.println(" UC17 - Sort Bogie Names Using Arrays.sort()");
         System.out.println("==================================================\n");
 
-        // Create array of passenger bogie capacities
-        int[] capacities = {72, 56, 24, 70, 60};
+        // Create array of bogie names
+        String[] bogieNames = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
 
         // Display original order
-        System.out.println("Original Capacities:");
-        for (int c : capacities) {
-            System.out.print(c + " ");
-        }
-        System.out.println();
+        System.out.println("Original Bogie Names:");
+        System.out.println(Arrays.toString(bogieNames) + "\n");
 
-        // Perform sorting
-        bubbleSort(capacities);
+        // Use built-in sorting utility
+        Arrays.sort(bogieNames);
 
         // Display sorted result
-        System.out.println("\nSorted Capacities (Ascending):");
-        for (int c : capacities) {
-            System.out.print(c + " ");
-        }
-        System.out.println("\n\nUC16 sorting completed...");
+        System.out.println("Sorted Bogie Names (Alphabetical):");
+        System.out.println(Arrays.toString(bogieNames) + "\n");
+
+        System.out.println("UC17 sorting completed...");
     }
 }
