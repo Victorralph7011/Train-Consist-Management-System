@@ -1,6 +1,6 @@
 public class Main {
 
-    // --- Restored classes to keep UC8-UC13 tests compiling happily ---
+    // --- Restored classes to keep UC8-UC14 tests compiling ---
     public static class Bogie {
         public String name;
         public String type;
@@ -13,65 +13,85 @@ public class Main {
         }
     }
 
-    public static class GoodsBogie {
-        public String type;
-        public String cargo;
-
-        public GoodsBogie(String type, String cargo) {
-            this.type = type;
-            this.cargo = cargo;
-        }
-    }
-    // -----------------------------------------------------------------
-
-    // ---- CUSTOM EXCEPTION ----
     public static class InvalidCapacityException extends Exception {
         public InvalidCapacityException(String message) {
             super(message);
         }
     }
 
-    // Passenger Bogie model with validation
     public static class PassengerBogie {
         public String type;
         public int capacity;
 
         public PassengerBogie(String type, int capacity) throws InvalidCapacityException {
-            // Fail-fast validation
             if (capacity <= 0) {
                 throw new InvalidCapacityException("Capacity must be greater than zero");
             }
             this.type = type;
             this.capacity = capacity;
         }
+    }
+    // ---------------------------------------------------------
+
+    // ---- CUSTOM RUNTIME EXCEPTION ----
+    public static class CargoSafetyException extends RuntimeException {
+        public CargoSafetyException(String message) {
+            super(message);
+        }
+    }
+
+    // Goods Bogie model with assignment logic
+    public static class GoodsBogie {
+        public String type; // Kept for UC12 legacy tests
+        public String shape;
+        public String cargo;
+
+        // Legacy constructor for UC12
+        public GoodsBogie(String type, String cargo) {
+            this.type = type;
+            this.shape = type;
+            this.cargo = cargo;
+        }
+
+        // New constructor for UC15
+        public GoodsBogie(String shape) {
+            this.shape = shape;
+            this.type = shape;
+        }
+
+        // Assign cargo with safety validation
+        public void assignCargo(String newCargo) {
+            try {
+                // Rule: Rectangular bogie cannot carry petroleum
+                if ("Rectangular".equalsIgnoreCase(this.shape) && "Petroleum".equalsIgnoreCase(newCargo)) {
+                    throw new CargoSafetyException("Unsafe cargo assignment!");
+                }
+                this.cargo = newCargo;
+                System.out.println("Cargo assigned successfully -> " + newCargo);
+            } catch (CargoSafetyException e) {
+                System.out.println("Error: " + e.getMessage());
+            } finally {
+                System.out.println("Cargo validation completed for " + shape + " bogie\n");
+            }
+        }
 
         @Override
         public String toString() {
-            return type + " -> " + capacity;
+            return shape + " -> " + cargo;
         }
     }
 
     public static void main(String[] args) {
         System.out.println("==================================================");
-        System.out.println(" UC14 - Handle Invalid Bogie Capacity");
+        System.out.println(" UC15 - Safe Cargo Assignment");
         System.out.println("==================================================\n");
 
-        try {
-            // 1. Create a valid bogie
-            PassengerBogie validBogie = new PassengerBogie("Sleeper", 72);
-            System.out.println("Created Bogie: " + validBogie);
+        GoodsBogie cylindrical = new GoodsBogie("Cylindrical");
+        cylindrical.assignCargo("Petroleum");
 
-            // 2. Attempt to create an invalid bogie (this will throw an exception)
-            PassengerBogie invalidBogie = new PassengerBogie("AC Chair", 0);
+        GoodsBogie rectangular = new GoodsBogie("Rectangular");
+        rectangular.assignCargo("Petroleum");
 
-            // This line won't execute because the exception jumps to the catch block
-            System.out.println("Created Bogie: " + invalidBogie);
-
-        } catch (InvalidCapacityException e) {
-            // Catch and display the custom error message
-            System.out.println("Error: " + e.getMessage());
-        }
-
-        System.out.println("\nUC14 exception handling completed...");
+        System.out.println("UC15 runtime handling completed...");
     }
 }
