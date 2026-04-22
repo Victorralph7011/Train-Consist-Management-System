@@ -2,7 +2,7 @@ import java.util.Arrays;
 
 public class Main {
 
-    // --- Restored classes to keep UC8-UC16 tests compiling ---
+    // --- Restored classes to keep UC8-UC17 tests compiling ---
     public static class Bogie {
         public String name;
         public String type;
@@ -75,25 +75,44 @@ public class Main {
     }
     // ---------------------------------------------------------
 
+    // ---- LINEAR SEARCH LOGIC ----
+    public static boolean linearSearch(String[] arr, String target) {
+        for (String id : arr) {
+            if (id.equals(target)) {
+                return true; // Match found, exit early
+            }
+        }
+        return false; // Traversed whole array, not found
+    }
+
     public static void main(String[] args) {
         System.out.println("==================================================");
-        System.out.println(" UC17 - Sort Bogie Names Using Arrays.sort()");
+        System.out.println(" UC18 - Linear Search for Bogie ID");
         System.out.println("==================================================\n");
 
-        // Create array of bogie names
-        String[] bogieNames = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
+        // Create array of bogie IDs
+        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
 
-        // Display original order
-        System.out.println("Original Bogie Names:");
-        System.out.println(Arrays.toString(bogieNames) + "\n");
+        // Bogie ID to search
+        String searchId = "BG309";
 
-        // Use built-in sorting utility
-        Arrays.sort(bogieNames);
+        // Display all bogies
+        System.out.println("Available Bogie IDs:");
+        for (String id : bogieIds) {
+            System.out.println(id);
+        }
+        System.out.println();
 
-        // Display sorted result
-        System.out.println("Sorted Bogie Names (Alphabetical):");
-        System.out.println(Arrays.toString(bogieNames) + "\n");
+        // Perform linear search
+        boolean found = linearSearch(bogieIds, searchId);
 
-        System.out.println("UC17 sorting completed...");
+        // Display result
+        if (found) {
+            System.out.println("Bogie " + searchId + " found in train consist.");
+        } else {
+            System.out.println("Bogie " + searchId + " not found in train consist.");
+        }
+
+        System.out.println("\nUC18 search completed...");
     }
 }
