@@ -2,7 +2,7 @@ import java.util.Arrays;
 
 public class Main {
 
-    // --- Restored classes to keep UC8-UC17 tests compiling ---
+    // --- Restored classes to keep UC8-UC18 tests compiling ---
     public static class Bogie {
         public String name;
         public String type;
@@ -73,38 +73,56 @@ public class Main {
             }
         }
     }
-    // ---------------------------------------------------------
 
-    // ---- LINEAR SEARCH LOGIC ----
     public static boolean linearSearch(String[] arr, String target) {
         for (String id : arr) {
             if (id.equals(target)) {
-                return true; // Match found, exit early
+                return true;
             }
         }
-        return false; // Traversed whole array, not found
+        return false;
+    }
+    // ---------------------------------------------------------
+
+    // ---- BINARY SEARCH LOGIC ----
+    public static boolean binarySearch(String[] arr, String target) {
+        int low = 0;
+        int high = arr.length - 1;
+
+        while (low <= high) {
+            // Find the middle index
+            int mid = low + (high - low) / 2;
+
+            // Compare the target with the middle element lexicographically
+            int comparison = target.compareTo(arr[mid]);
+
+            if (comparison == 0) {
+                return true; // Match found
+            }
+
+            if (comparison > 0) {
+                low = mid + 1; // Target is greater, discard left half
+            } else {
+                high = mid - 1; // Target is smaller, discard right half
+            }
+        }
+        return false; // Exhausted search space, not found
     }
 
     public static void main(String[] args) {
         System.out.println("==================================================");
-        System.out.println(" UC18 - Linear Search for Bogie ID");
+        System.out.println(" UC19 - Binary Search for Bogie ID");
         System.out.println("==================================================\n");
 
-        // Create array of bogie IDs
+        // Array MUST be sorted for Binary Search to work
         String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+        String searchId = "BG412";
 
-        // Bogie ID to search
-        String searchId = "BG309";
+        System.out.println("Sorted Available Bogie IDs:");
+        System.out.println(Arrays.toString(bogieIds) + "\n");
 
-        // Display all bogies
-        System.out.println("Available Bogie IDs:");
-        for (String id : bogieIds) {
-            System.out.println(id);
-        }
-        System.out.println();
-
-        // Perform linear search
-        boolean found = linearSearch(bogieIds, searchId);
+        // Perform binary search
+        boolean found = binarySearch(bogieIds, searchId);
 
         // Display result
         if (found) {
@@ -113,6 +131,6 @@ public class Main {
             System.out.println("Bogie " + searchId + " not found in train consist.");
         }
 
-        System.out.println("\nUC18 search completed...");
+        System.out.println("\nUC19 search completed...");
     }
 }
